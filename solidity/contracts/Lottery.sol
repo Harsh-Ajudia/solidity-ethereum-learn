@@ -4,7 +4,7 @@ contract Lottery{
     address public manager;
     address[] public players; 
     
-    function Lottery() public {
+    constructor() public {
         manager = msg.sender;
     }
     
@@ -14,18 +14,22 @@ contract Lottery{
     }
     
     function random() private view returns(uint){
-        return uint(sha3(block.difficulty, now, players));
+        return uint(keccak256(abi.encode(block.difficulty, now, players)));
     }
     
     function pickWinner() public restricted {
-        uint index = random % players.length;
-        players[index].transfer(this.balance);
+        uint index = random() % players.length;
+        players[index].transfer(address(this).balance);
+
+        // address payable winner = address(uint160(players[index]));
+        // winner.transfer(address(this).balance);
+        
         players = new address[](0);
     }
     
     modifier restricted() {
         require(manager == msg.sender);
-        -;
+        _;
     }
     
     function getPlayers() public view returns(address[]) {

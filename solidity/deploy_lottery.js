@@ -1,6 +1,6 @@
 const HDWalletProvider = require('truffle-hdwallet-provider')
 const Web3 = require('web3')
-const { interface, bytecode } = require('./compile')
+const { interface, bytecode } = require('./compile_lottery')
 
 const provider = new HDWalletProvider(
     process.env.METAMASK_MNEMONIC,
@@ -13,7 +13,7 @@ const deploy = async () => {
     const accounts = await web3.eth.getAccounts()
     const account = accounts[0]
     const result = await new web3.eth.Contract(JSON.parse(interface))
-        .deploy({ data: bytecode, arguments: ['Konnichiwa!'] })
+        .deploy({ data: bytecode })
         .send({ gas: '1000000', from: account })
 
     console.log(`deployed from ${account}`)
